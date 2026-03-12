@@ -1,0 +1,19 @@
+# Python caches
+__pycache__/
+*.py[cod]
+
+# Tooling caches
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.ipynb_checkpoints/
+
+# Platform-specific files
+.DS_Store
+._*
+
+# Experiment outputs
+outputs/
+
+# Weights & Biases artifacts
+wandb/

@@ -1,0 +1,13 @@
+[project]
+name = "ddpms"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.11"
+required-environments = [
+    "sys_platform == 'darwin' and platform_machine == 'arm64'",
+    "sys_platform == 'linux' and platform_machine == 'x86_64'",
+]
+dependencies = [
+    "wandb>=0.19.0",
+]
