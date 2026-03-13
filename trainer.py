@@ -13,6 +13,7 @@ from torch.utils.data import DataLoader
 from torchmetrics.image.fid import FrechetInceptionDistance
 
 import wandb
+from ddpm import DDPM
 
 
 @dataclass
@@ -20,6 +21,7 @@ class TrainerConfig:
     timesteps: int = 1000
     beta_start: float = 1e-4
     beta_end: float = 0.02
+    schedule: str = "linear"
     log_every: int = 500
     eval_every: int = 500
     num_eval_samples: int = 4
@@ -58,15 +60,27 @@ class DDPMTrainer:
         self.fid_metric = self._build_fid_metric()
         self.wandb_run = self._init_wandb()
 
-        self.betas = torch.linspace(
-            self.config.beta_start,
-            self.config.beta_end,
-            self.config.timesteps,
+        self.ddpm = DDPM(
+            timesteps=self.config.timesteps,
+            beta_start=self.config.beta_start,
+            beta_end=self.config.beta_end,
+            schedule=self.config.schedule,
+        )
+        self.betas = torch.tensor(
+            self.ddpm.betas,
             device=self.device,
             dtype=torch.float32,
         )
-        self.alphas = 1.0 - self.betas
-        self.alpha_bars = torch.cumprod(self.alphas, dim=0)
+        self.alphas = torch.tensor(
+            self.ddpm.alphas,
+            device=self.device,
+            dtype=torch.float32,
+        )
+        self.alpha_bars = torch.tensor(
+            self.ddpm.alpha_bars,
+            device=self.device,
+            dtype=torch.float32,
+        )
 
     @staticmethod
     def _resolve_device(preferred: str | None) -> torch.device:
@@ -124,6 +138,7 @@ class DDPMTrainer:
                 "timesteps": self.config.timesteps,
                 "beta_start": self.config.beta_start,
                 "beta_end": self.config.beta_end,
+                "schedule": self.config.schedule,
                 "log_every": self.config.log_every,
                 "eval_every": self.config.eval_every,
                 "num_eval_samples": self.config.num_eval_samples,

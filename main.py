@@ -69,6 +69,7 @@ def main() -> None:
         eval_every=500,
         num_eval_samples=4,
         output_dir="outputs/cifar10_ddpm",
+        compute_fid=False,
     )
 
     trainer = DDPMTrainer(
@@ -78,7 +79,7 @@ def main() -> None:
         val_loader=val_loader,
         config=config,
     )
-    trainer.train(epochs=1000)
+    trainer.train(epochs=10)
 
 
 if __name__ == "__main__":
