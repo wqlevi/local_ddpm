@@ -18,8 +18,10 @@ def build_subset(dataset: datasets.CIFAR10, fraction: float) -> Subset:
 
 
 def main() -> None:
-    if not torch.backends.mps.is_available():
-        raise RuntimeError("MPS device is required but not available on this machine.")
+    if not (torch.backends.mps.is_available() or torch.cuda.is_available()):
+        raise RuntimeError(
+            "CUDA or MPS device is required but not available on this machine."
+        )
 
     transform = transforms.Compose(
         [
@@ -67,7 +69,6 @@ def main() -> None:
         eval_every=500,
         num_eval_samples=4,
         output_dir="outputs/cifar10_ddpm",
-        device="mps",
     )
 
     trainer = DDPMTrainer(

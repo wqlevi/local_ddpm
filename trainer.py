@@ -248,7 +248,6 @@ class DDPMTrainer:
 
     @torch.no_grad()
     def _compute_fid(self, max_batches: int | None = None) -> float | None:
-        breakpoint()
         if self.fid_metric is None:
             return None
 
